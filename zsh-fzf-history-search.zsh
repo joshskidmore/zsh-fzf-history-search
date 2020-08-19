@@ -1,5 +1,5 @@
 fzf_history_seach() {
-  history -i 0 | grep -v 1969 | fzf +s +m -x --tac -e | awk '{print substr($0, index($0, $4))}' | tr -d "\n"
+  history -t '%Y-%m-%d %I:%M:%S' 0 | grep -v 1969 | fzf +s +m -x --tac -e | awk '{print substr($0, index($0, $4))}' | tr -d "\n"
 }
 
 autoload fzf_history_seach
