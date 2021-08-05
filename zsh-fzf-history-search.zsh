@@ -1,6 +1,8 @@
 fzf_history_seach() {
-  BUFFER=$(history -t '%Y-%m-%d %H:%M:%S' 0 | fzf +s +m -x --tac -e -q "$BUFFER" | awk '{print substr($0, index($0, $4))}')
-  zle end-of-line
+  setopt extendedglob
+  candidates=(${(f)"$(history -t '%Y-%m-%d %H:%M:%S' 0| fzf +s +m -x --tac -e -q "$BUFFER")"})
+  print -v BUFFER "${candidates[@]/(#m)*/${${(As: :)MATCH}[4,-1]}}"
+  zle end-of-buffer-or-history
 }
 
 autoload fzf_history_seach
