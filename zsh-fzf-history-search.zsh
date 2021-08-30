@@ -1,6 +1,6 @@
 fzf_history_seach() {
   setopt extendedglob
-  candidates=(${(f)"$(history -t '%Y-%m-%d %H:%M:%S' 0| fzf +s +m -x --tac -e -q "$BUFFER")"})
+  candidates=(${(f)"$(fc -li -1 0 | fzf +s +m -x -e -q "$BUFFER")"})
   BUFFER="${candidates[@]/(#m)*/${${(As: :)MATCH}[4,-1]}}"
   BUFFER="${BUFFER[@]/(#b)(?)\\n/$match[1]
 }"
