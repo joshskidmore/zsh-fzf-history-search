@@ -8,7 +8,9 @@ A simple zsh plugin to replace `Ctrl-r` with an fzf-driven, searchable list of h
 ## Requirements
 * [fzf](https://github.com/junegunn/fzf)
 
-## Installation with zinit
+## Installation
+
+### zinit
 
 Add this to `~/.zshrc`:
 
@@ -16,6 +18,20 @@ Add this to `~/.zshrc`:
 # zsh-fzf-history-search
 zinit ice lucid wait'0'
 zinit light joshskidmore/zsh-fzf-history-search
+```
+
+### oh-my-zsh
+
+Clone the repository inside your oh-my-zsh repo:
+
+``` sh
+git clone https://github.com/joshskidmore/zsh-fzf-history-search ${ZSH_CUSTOM:=~/.oh-my-zsh/custom}/plugins/zsh-fzf-history-search
+```
+
+Enable it in your `.zshrc` by adding it to your plugin list:
+
+```
+plugins=(… zsh-fzf-history-search)
 ```
 
 ## TODO
