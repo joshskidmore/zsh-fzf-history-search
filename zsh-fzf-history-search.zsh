@@ -13,6 +13,10 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ARGS='+s +m -x -e'
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS=''
 
+# Cursor to end-of-line
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_END_OF_LINE} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_END_OF_LINE=''
+
 fzf_history_search() {
   setopt extendedglob
   candidates=(${(f)"$(fc -li -1 0 | fzf $(echo $ZSH_FZF_HISTORY_SEARCH_FZF_ARGS) $(echo $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS) -q "$BUFFER")"})
@@ -22,6 +26,9 @@ fzf_history_search() {
     BUFFER="${BUFFER[@]/(#b)(?)\\n/$match[1]
 }"
     zle vi-fetch-history -n $BUFFER
+    if [ -n "${ZSH_FZF_HISTORY_SEARCH_END_OF_LINE}" ]; then
+      zle end-of-line
+    fi
   fi
   zle reset-prompt
   return $ret
