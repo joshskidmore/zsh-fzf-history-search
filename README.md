@@ -41,6 +41,7 @@ plugins=(… zsh-fzf-history-search)
 | `ZSH_FZF_HISTORY_SEARCH_BIND`             | Keybind to trigger fzf reverse search (default: `'^r'`)                                           |
 | `ZSH_FZF_HISTORY_SEARCH_FZF_ARGS`         | Arguments for `fzf` (might be updated, not recommended to override) (default: `'+s +m -x -e'`)    |
 | `ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS`   | Extra arguments for `fzf` (default: `''`)                                                         |
+| `ZSH_FZF_HISTORY_SEARCH_END_OF_LINE`      | Put the cursor on at the end of the line after completion, `empty=false` (default: `''`)          |
 
 
 ## TODO
