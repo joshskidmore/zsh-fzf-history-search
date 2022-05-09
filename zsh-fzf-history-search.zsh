@@ -19,7 +19,7 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_END_OF_LINE=''
 
 fzf_history_search() {
   setopt extendedglob
-  candidates=(${(f)"$(fc -li -1 0 | fzf $(echo $ZSH_FZF_HISTORY_SEARCH_FZF_ARGS) $(echo $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS) -q "$BUFFER")"})
+  candidates=(${(f)"$(fc -li -1 0 | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
   local ret=$?
   if [ -n "$candidates" ]; then
     BUFFER="${candidates[@]/(#m)*/${${(As: :)MATCH}[4,-1]}}"
