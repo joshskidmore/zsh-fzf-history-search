@@ -42,6 +42,7 @@ plugins=(… zsh-fzf-history-search)
 | `ZSH_FZF_HISTORY_SEARCH_FZF_ARGS`         | Arguments for `fzf` (might be updated, not recommended to override) (default: `'+s +m -x -e'`)    |
 | `ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS`   | Extra arguments for `fzf` (default: `''`)                                                         |
 | `ZSH_FZF_HISTORY_SEARCH_END_OF_LINE`      | Put the cursor on at the end of the line after completion, `empty=false` (default: `''`)          |
+| `ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS`    | Include event numbers in search.  Set to 0 to remove event numbers from the search. (default: `1`)|
 
 
 ## TODO
