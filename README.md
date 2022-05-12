@@ -44,6 +44,7 @@ plugins=(… zsh-fzf-history-search)
 | `ZSH_FZF_HISTORY_SEARCH_END_OF_LINE`      | Put the cursor on at the end of the line after completion, `empty=false` (default: `''`)          |
 | `ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS`    | Include event numbers in search.  Set to 0 to remove event numbers from the search. (default: `1`)|
 | `ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH`  | Include ISO8601 timestamps in search.  Set to 0 to remove them from the search. (default: `1`)    |
+| `ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES`| Remove duplicate entries from search.  Only makes sense with `EVENT_NUMBERS` and `DATE_INSEARCH` 0 (false). (default: ``)    |
 
 
 ## TODO
