@@ -21,15 +21,24 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_END_OF_LINE=''
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS=1
 
+# Include full date timestamps in ISO8601 `yyyy-mm-dd hh:mm' format
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
+
 fzf_history_search() {
   setopt extendedglob
 
-  FC_ARGS="-li"
-  CANDIDATE_LEADING_FIELDS=4
+  FC_ARGS="-l"
+  CANDIDATE_LEADING_FIELDS=2
 
   if (( ! $ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS )); then
     FC_ARGS+=" -n"
-    CANDIDATE_LEADING_FIELDS=3
+    ((CANDIDATE_LEADING_FIELDS--))
+  fi
+
+  if (( $ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH )); then
+    FC_ARGS+=" -i"
+    ((CANDIDATE_LEADING_FIELDS+=2))
   fi
 
   candidates=(${(f)"$(fc ${=FC_ARGS} -1 0 | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
