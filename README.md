@@ -36,15 +36,15 @@ plugins=(… zsh-fzf-history-search)
 
 ## Configuration Variables
 
-| Variable                                  | Description                                                                                       |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `ZSH_FZF_HISTORY_SEARCH_BIND`             | Keybind to trigger fzf reverse search (default: `'^r'`)                                           |
-| `ZSH_FZF_HISTORY_SEARCH_FZF_ARGS`         | Arguments for `fzf` (might be updated, not recommended to override) (default: `'+s +m -x -e'`)    |
-| `ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS`   | Extra arguments for `fzf` (default: `''`)                                                         |
-| `ZSH_FZF_HISTORY_SEARCH_END_OF_LINE`      | Put the cursor on at the end of the line after completion, `empty=false` (default: `''`)          |
-| `ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS`    | Include event numbers in search.  Set to 0 to remove event numbers from the search. (default: `1`)|
-| `ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH`  | Include ISO8601 timestamps in search.  Set to 0 to remove them from the search. (default: `1`)    |
-| `ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES`| Remove duplicate entries from search.  Only makes sense with `EVENT_NUMBERS` and `DATE_INSEARCH` 0 (false). (default: ``)    |
+| Variable                                  | Default         | Description                                                                                                |
+| ----------------------------------------- | --------------- | ---------------------------------------------------------------------------------------------------------- |
+| `ZSH_FZF_HISTORY_SEARCH_BIND`             | `'^r'`          | Keybind to trigger fzf reverse search                                                                      |
+| `ZSH_FZF_HISTORY_SEARCH_FZF_ARGS`         | `'+s +m -x -e'` | Arguments for `fzf` (might be updated, not recommended to override)                                        |
+| `ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS`   | `''`            | Extra arguments for `fzf`                                                                                  |
+| `ZSH_FZF_HISTORY_SEARCH_END_OF_LINE`      | `''`            | Put the cursor on at the end of the line after completion, `empty=false`                                   |
+| `ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS`    | `1`             | Include event numbers in search.  Set to 0 to remove event numbers from the search.                        |
+| `ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH`  | `1`             | Include ISO8601 timestamps in search.  Set to 0 to remove them from the search.                            |
+| `ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES`| `''`            | Remove duplicate entries from search.  Only makes sense with `EVENT_NUMBERS` and `DATE_INSEARCH` 0 (false).|
 
 
 ## TODO
