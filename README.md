@@ -34,6 +34,12 @@ Enable it in your `.zshrc` by adding it to your plugin list:
 plugins=(… zsh-fzf-history-search)
 ```
 
+### [zgenom](https://github.com/jandamm/zgenom)
+
+Add `joshskidmore/zsh-fzf-history-search` to your `.zshrc` file in the same function you're doing your other `zgenom load` calls in.
+
+Zgenom will automatically clone the plugin repositories for you when you do a `zgenom save`.
+
 ## Configuration Variables
 
 | Variable                                  | Default         | Description                                                                                                |
