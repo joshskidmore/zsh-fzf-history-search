@@ -7,7 +7,7 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_BIND='^r'
 
 # Args for fzf
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} )) &&
-typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ARGS='+s +m -x -e'
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ARGS='+s +m -x -e --preview-window=hidden'
 
 # Extra args for fzf
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} )) &&
