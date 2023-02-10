@@ -64,8 +64,7 @@ fzf_history_search() {
     else
       BUFFER="${candidates[@]}"
     fi
-    BUFFER="${BUFFER[@]/(#b)(?)\\n/$match[1]
-}"
+    BUFFER=$(printf "${BUFFER[@]//\\\\n/\\\\\\n}")
     zle vi-fetch-history -n $BUFFER
     if [ -n "${ZSH_FZF_HISTORY_SEARCH_END_OF_LINE}" ]; then
       zle end-of-line
