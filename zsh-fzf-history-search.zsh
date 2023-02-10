@@ -59,7 +59,11 @@ fzf_history_search() {
   candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
   local ret=$?
   if [ -n "$candidates" ]; then
-    BUFFER="${candidates[@]/(#m)*/${${(As: :)MATCH}[${CANDIDATE_LEADING_FIELDS},-1]}}"
+    if (( ! $CANDIDATE_LEADING_FIELDS == 1 )); then
+      BUFFER="${candidates[@]/(#m)[0-9 \-\:]##/${${(As: :)MATCH}[${CANDIDATE_LEADING_FIELDS},-1]}}"
+    else
+      BUFFER="${candidates[@]}"
+    fi
     BUFFER="${BUFFER[@]/(#b)(?)\\n/$match[1]
 }"
     zle vi-fetch-history -n $BUFFER
