@@ -29,6 +29,10 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 
+# Define fzf query, when $BUFFER is not empty
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX=''
+
 fzf_history_search() {
   setopt extendedglob
 
@@ -56,13 +60,17 @@ fzf_history_search() {
     fi
   fi
 
-  candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
+  if (( $#BUFFER )); then
+    candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "${=ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX}$BUFFER")"})
+  else
+    candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS})"})
+  fi
   local ret=$?
   if [ -n "$candidates" ]; then
     if (( ! $CANDIDATE_LEADING_FIELDS == 1 )); then
       BUFFER="${candidates[@]/(#m)[0-9 \-\:]##/${${(As: :)MATCH}[${CANDIDATE_LEADING_FIELDS},-1]}}"
     else
-      BUFFER="${candidates[@]}"
+      BUFFER="${(j| && |)candidates}"
     fi
     BUFFER=$(printf "${BUFFER[@]//\\\\n/\\\\\\n}")
     zle vi-fetch-history -n $BUFFER
