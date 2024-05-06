@@ -58,7 +58,7 @@ forgetline() {
         screen -S "$session_id" -X stuff $'fc -R\n'
     done
 
-    #Other ways to reset your session
+    #Other ways to reload your session history
     #exec zsh
     #omz reload
     #screen -ls | grep '\.screen' | cut -d. -f1 | awk '{print $1}' | xargs -I {} screen -S {} -X stuff $'fc -R\n'
@@ -84,11 +84,12 @@ fzf_history_search() {
   fi
 
   history_cmd="fc ${=FC_ARGS} -1 0"
-  # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively
+
   if [ -n "${ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES}" ]; then
     if (( $+commands[awk] )); then
       history_cmd="$history_cmd | awk '!seen[\$0]++'"
     else
+      # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively
       history_cmd="$history_cmd | uniq"
     fi
   fi
@@ -97,7 +98,6 @@ fzf_history_search() {
   local fzf_extra_args="--bind '$fzf_bind' $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS"
   local fzf_command="eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} $fzf_extra_args -q '$BUFFER'"
   candidates=("${(@f)$(eval "$fzf_command")}")
-
   local ret=$?
   if [ -n "$candidates" ]; then
     if (( $CANDIDATE_LEADING_FIELDS != 1 )); then
