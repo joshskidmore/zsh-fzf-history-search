@@ -31,7 +31,8 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 
 forgetline() {
     # Extract the command to delete, assuming it's the entire command string after the initial metadata
-    local command_to_delete=$(echo "$1" | sed -E 's/^[0-9]+[[:space:]]+[0-9-]+[[:space:]]+[0-9:]+[[:space:]]+//')
+    # local command_to_delete=$(echo "$1" | sed -E 's/^[0-9]+[[:space:]]+[0-9-]+[[:space:]]+[0-9:]+[[:space:]]+//')
+    local command_to_delete=$(echo "$1" | awk '{$1=$2=$3=""; sub(/^[ \t]+/, ""); print}')
 
     # Properly escape the command to delete for use in sed
     local escaped_command=$(printf '%s\n' "$command_to_delete" | sed -e 's/[\/&]/\\&/g')
