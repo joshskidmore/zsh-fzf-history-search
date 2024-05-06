@@ -89,7 +89,7 @@ fzf_history_search() {
     if (( $+commands[awk] )); then
       history_cmd="$history_cmd | awk '!seen[\$0]++'"
     else
-      # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively
+      # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively.
       history_cmd="$history_cmd | uniq"
     fi
   fi
