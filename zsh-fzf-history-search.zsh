@@ -48,7 +48,7 @@ forgetline() {
     #cp "$histfile" "$histfile.bak"
 
     # Use sed to remove lines containing the escaped command
-    sed -i "/^$escaped_command$/d" "$histfile"
+    sed -i "/$escaped_command$/d" "$histfile"
 
     # Check if sed succeeded
     if [ $? -eq 0 ]; then
@@ -60,7 +60,7 @@ forgetline() {
     
     #refresh the session histories
     screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
-        screen -S "$session_id" -X stuff $'fc -R\n'
+        screen -S "$session_id" -X stuff $'\nfc -R\n'
     done
 
     #Other ways to reload your session history
@@ -128,5 +128,6 @@ fzf_history_search() {
 
 autoload fzf_history_search
 zle -N fzf_history_search
-
+zle -N forgetline
 bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
+bindkey ^F forgetline
