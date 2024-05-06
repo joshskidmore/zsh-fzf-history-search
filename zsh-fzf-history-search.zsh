@@ -29,6 +29,10 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 
+# Define fzf query, when $BUFFER is not empty
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX=''
+
 forgetline() {
     # Extract the command to delete, assuming it's the entire command string after the initial metadata
     # local command_to_delete=$(echo "$1" | sed -E 's/^[0-9]+[[:space:]]+[0-9-]+[[:space:]]+[0-9:]+[[:space:]]+//')
@@ -44,7 +48,7 @@ forgetline() {
     #cp "$histfile" "$histfile.bak"
 
     # Use sed to remove lines containing the escaped command
-    sed -i "/$escaped_command/d" "$histfile"
+    sed -i "/^$escaped_command$/d" "$histfile"
 
     # Check if sed succeeded
     if [ $? -eq 0 ]; then
@@ -97,14 +101,20 @@ fzf_history_search() {
 
   local fzf_bind="delete:execute(source ~/.oh-my-zsh/custom/plugins/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
   local fzf_extra_args="--bind '$fzf_bind' $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS"
-  local fzf_command="eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} $fzf_extra_args -q '$BUFFER'"
+  # Check if there is an initial query set in BUFFER
+  if (( $#BUFFER )); then
+    local fzf_command="eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} $fzf_extra_args -q '${=ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX}$BUFFER'"
+  else
+    local fzf_command="eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} $fzf_extra_args"
+  fi
+  # Execute fzf command and capture candidates
   candidates=("${(@f)$(eval "$fzf_command")}")
   local ret=$?
   if [ -n "$candidates" ]; then
     if (( $CANDIDATE_LEADING_FIELDS != 1 )); then
       BUFFER="${candidates[@]/(#m)[0-9 \-\:]##/${${(As: :)MATCH}[${CANDIDATE_LEADING_FIELDS},-1]}}"
     else
-      BUFFER="${candidates[@]}"
+      BUFFER="${(j| && |)candidates}"
     fi
     BUFFER=$(printf "${BUFFER[@]//\\\\n/\\\\\\n}")
     zle vi-fetch-history -n $BUFFER
