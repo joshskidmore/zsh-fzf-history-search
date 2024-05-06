@@ -29,10 +29,6 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 
-zshaddhistory() {
- [[ $1 != 'fc -R '* ]]
-}
-
 forgetline() {
     # Extract the command to delete, assuming it's the entire command string after the initial metadata
     local command_to_delete=$(echo "$1" | sed -E 's/^[0-9]+[[:space:]]+[0-9-]+[[:space:]]+[0-9:]+[[:space:]]+//')
@@ -88,7 +84,7 @@ fzf_history_search() {
   fi
 
   history_cmd="fc ${=FC_ARGS} -1 0"
-
+  # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively
   if [ -n "${ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES}" ]; then
     if (( $+commands[awk] )); then
       history_cmd="$history_cmd | awk '!seen[\$0]++'"
@@ -121,4 +117,5 @@ fzf_history_search() {
 
 autoload fzf_history_search
 zle -N fzf_history_search
+
 bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
