@@ -29,6 +29,48 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH=1
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 
+zshaddhistory() {
+ [[ $1 != 'fc -R '* ]]
+}
+
+forgetline() {
+    # Extract the command to delete, assuming it's the entire command string after the initial metadata
+    local command_to_delete=$(echo "$1" | sed -E 's/^[0-9]+[[:space:]]+[0-9-]+[[:space:]]+[0-9:]+[[:space:]]+//')
+
+    # Properly escape the command to delete for use in sed
+    local escaped_command=$(printf '%s\n' "$command_to_delete" | sed -e 's/[\/&]/\\&/g')
+
+    # Set the location of the history file
+    local histfile="${HISTFILE:-$HOME/.zsh_history}"
+
+    # Make a backup of the current history file
+    #cp "$histfile" "$histfile.bak"
+
+    # Use sed to remove lines containing the escaped command
+    sed -i "/$escaped_command/d" "$histfile"
+
+    # Check if sed succeeded
+    if [ $? -eq 0 ]; then
+        true
+        #echo "\nDeleted entries matching: '$command_to_delete' from history."
+    else
+        echo "Failed to delete entries. Please check the command and history file."
+    fi
+    
+    #refresh the session histories
+    screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
+        screen -S "$session_id" -X stuff $'fc -R\n'
+    done
+
+    #Other ways to reset your session
+    #exec zsh
+    #omz reload
+    #screen -ls | grep '\.screen' | cut -d. -f1 | awk '{print $1}' | xargs -I {} screen -S {} -X stuff $'fc -R\n'
+    #tmux list-panes -s -F "#{pane_id}" | xargs -I {} tmux send-keys -t {} 'source ~/.zshrc' C-m
+
+    return
+}
+
 fzf_history_search() {
   setopt extendedglob
 
@@ -47,16 +89,19 @@ fzf_history_search() {
 
   history_cmd="fc ${=FC_ARGS} -1 0"
 
-  if [ -n "${ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES}" ];then
+  if [ -n "${ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES}" ]; then
     if (( $+commands[awk] )); then
       history_cmd="$history_cmd | awk '!seen[\$0]++'"
     else
-      # In case awk is not installed fallback to uniq. It will only remove commands that are repeated consecutively.
       history_cmd="$history_cmd | uniq"
     fi
   fi
 
-  candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "$BUFFER")"})
+  local fzf_bind="delete:execute(source ~/.oh-my-zsh/custom/plugins/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
+  local fzf_extra_args="--bind '$fzf_bind' $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS"
+  local fzf_command="eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} $fzf_extra_args -q '$BUFFER'"
+  candidates=("${(@f)$(eval "$fzf_command")}")
+
   local ret=$?
   if [ -n "$candidates" ]; then
     if (( $CANDIDATE_LEADING_FIELDS != 1 )); then
@@ -76,5 +121,4 @@ fzf_history_search() {
 
 autoload fzf_history_search
 zle -N fzf_history_search
-
 bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
