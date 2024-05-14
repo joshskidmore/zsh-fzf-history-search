@@ -45,7 +45,7 @@ forgetline() {
     local histfile="${HISTFILE:-$HOME/.zsh_history}"
 
     # Make a backup of the current history file
-    cp "$histfile" "$histfile.bak"
+    #cp "$histfile" "$histfile.bak"
 
     # Use sed to remove lines containing the escaped command
     sed -i "/$escaped_command$/d" "$histfile"
@@ -59,12 +59,14 @@ forgetline() {
     fi
 
     #refresh the session histories
-    screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
-        screen -S "$session_id" -X stuff $'\nfc -R\n'
-    done
-    tmux list-sessions -F '#{session_id}' | while read session_id; do
-        tmux send-keys -t "$session_id" Enter 'fc -R' Enter
-    done
+    if ! screen >/dev/null; then
+        screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
+            screen -S "$session_id" -X stuff $'\nfc -R\n'
+        done
+    if ! tmux >/dev/null; then
+        tmux list-sessions -F '#{session_id}' | while read session_id; do
+            tmux send-keys -t "$session_id" Enter 'fc -R' Enter
+        done
 
 
     #Other ways to reload your session history
