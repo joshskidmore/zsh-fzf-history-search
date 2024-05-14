@@ -63,10 +63,12 @@ forgetline() {
         screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
             screen -S "$session_id" -X stuff $'\nfc -R\n'
         done
+    fi
     if ! tmux >/dev/null; then
         tmux list-sessions -F '#{session_id}' | while read session_id; do
             tmux send-keys -t "$session_id" Enter 'fc -R' Enter
         done
+    fi
 
 
     #Other ways to reload your session history
