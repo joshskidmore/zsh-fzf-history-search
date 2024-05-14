@@ -45,7 +45,7 @@ forgetline() {
     local histfile="${HISTFILE:-$HOME/.zsh_history}"
 
     # Make a backup of the current history file
-    #cp "$histfile" "$histfile.bak"
+    cp "$histfile" "$histfile.bak"
 
     # Use sed to remove lines containing the escaped command
     sed -i "/$escaped_command$/d" "$histfile"
@@ -57,18 +57,19 @@ forgetline() {
     else
         echo "Failed to delete entries. Please check the command and history file."
     fi
-    
+
     #refresh the session histories
     screen -ls | grep -oP '\d+\.\S+' | while read session_id; do
         screen -S "$session_id" -X stuff $'\nfc -R\n'
     done
+    tmux list-sessions -F '#{session_id}' | while read session_id; do
+        tmux send-keys -t "$session_id" Enter 'fc -R' Enter
+    done
+
 
     #Other ways to reload your session history
     #exec zsh
     #omz reload
-    #screen -ls | grep '\.screen' | cut -d. -f1 | awk '{print $1}' | xargs -I {} screen -S {} -X stuff $'fc -R\n'
-    #tmux list-panes -s -F "#{pane_id}" | xargs -I {} tmux send-keys -t {} 'source ~/.zshrc' C-m
-
     return
 }
 
@@ -99,7 +100,7 @@ fzf_history_search() {
     fi
   fi
 
-  local fzf_bind="delete:execute(source ~/.oh-my-zsh/custom/plugins/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
+  local fzf_bind="delete:execute(source $(dirname ${(%):-%N})/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
   local fzf_extra_args="--bind '$fzf_bind' $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS"
   # Check if there is an initial query set in BUFFER
   if (( $#BUFFER )); then
@@ -130,4 +131,4 @@ autoload fzf_history_search
 zle -N fzf_history_search
 zle -N forgetline
 bindkey $ZSH_FZF_HISTORY_SEARCH_BIND fzf_history_search
-bindkey '^F' forgetline
+bindkey '[^F' forgetline
