@@ -104,7 +104,7 @@ fzf_history_search() {
     fi
   fi
 
-  local fzf_bind="delete:execute(source $(dirname ${(%):-%N})/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
+  local fzf_bind="delete:execute(source $ZSH_CUSTOM/plugins/zsh-fzf-history-search/zsh-fzf-history-search.zsh; forgetline {1..-1})+abort"
   local fzf_extra_args="--bind '$fzf_bind' $ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS"
   # Check if there is an initial query set in BUFFER
   if (( $#BUFFER )); then
