@@ -40,6 +40,17 @@ Add `joshskidmore/zsh-fzf-history-search` to your `.zshrc` file in the same func
 
 Zgenom will automatically clone the plugin repositories for you when you do a `zgenom save`.
 
+### sheldon
+
+Add this to `~/.config/sheldon/plugins.toml`:
+
+```toml
+[plugins.zsh-fzf-history-search]
+github = 'joshskidmore/zsh-fzf-history-search'
+```
+
+and run `sheldon lock` to install the plugin.
+
 ## Configuration Variables
 
 | Variable                                  | Default                                 | Description                                                                                                |
