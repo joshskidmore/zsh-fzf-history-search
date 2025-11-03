@@ -69,7 +69,7 @@ fzf_history_search() {
   local ret=$?
   if [ -n "$candidates" ]; then
     if (( $CANDIDATE_LEADING_FIELDS != 1 )); then
-      BUFFER="${candidates[@]/(#m)[0-9 \-\:]##/$(
+      BUFFER="${candidates[@]/(#m)[0-9 \-\:\*]##/$(
       printf '%s' "${${(As: :)MATCH}[${CANDIDATE_LEADING_FIELDS},-1]}" | sed 's/%/%%/g'
       )}"
     else
