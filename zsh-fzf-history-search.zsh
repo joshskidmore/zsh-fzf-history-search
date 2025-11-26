@@ -39,7 +39,7 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER=0
 
 # Define fzf edit item key
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY} )) &&
-typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY='left'
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY='right'
 
 fzf_history_search() {
   setopt extendedglob
