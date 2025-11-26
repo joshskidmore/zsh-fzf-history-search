@@ -63,6 +63,8 @@ and run `sheldon lock` to install the plugin.
 | `ZSH_FZF_HISTORY_SEARCH_EVENT_NUMBERS`    | `1`                                     | Include event numbers in search.  Set to 0 to remove event numbers from the search.                        |
 | `ZSH_FZF_HISTORY_SEARCH_DATES_IN_SEARCH`  | `1`                                     | Include ISO8601 timestamps in search.  Set to 0 to remove them from the search.                            |
 | `ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES`| `''`                                    | Remove duplicate entries from search.  Only makes sense with `EVENT_NUMBERS` and `DATE_INSEARCH` 0 (false).|
+| `ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER` | `0`                                     | Execute the selected line instead of just putting it on the prompt.                                        |
+| `ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY`.    | `'left'`                                | If ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER=1 then this key will put the selected line on the prompt.       |
 
 
 ## TODO
