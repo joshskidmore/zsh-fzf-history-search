@@ -33,6 +33,14 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_REMOVE_DUPLICATES=''
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX} )) &&
 typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX=''
 
+# Define fzf accept on enter
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER=0
+
+# Define fzf edit item key
+(( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY} )) &&
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY='right'
+
 fzf_history_search() {
   setopt extendedglob
 
@@ -60,10 +68,37 @@ fzf_history_search() {
     fi
   fi
 
+  local accept_args=""
+  if (( $ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER )); then
+    accept_args="--expect=${ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY}"
+    # ZSH_FZF_HISTORY_SEARCH_FZF_ARGS+=" --bind '${=ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY}:become(echo +{})' "
+  fi
+
+  # printf '%s\n' "fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS}" >/tmp/mike
+
   if (( $#BUFFER )); then
-    candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "${=ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX}$BUFFER")"})
+    candidates=(${(f)"$(eval $history_cmd | fzf ${=accept_args} ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} -q "${=ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX}$BUFFER")"})
   else
-    candidates=(${(f)"$(eval $history_cmd | fzf ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS})"})
+    candidates=(${(f)"$(eval $history_cmd | fzf ${=accept_args} ${=ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} ${=ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS})"})
+  fi
+
+  local accept=${ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER}
+  if (( $ZSH_FZF_HISTORY_SEARCH_FZF_ACCEPT_ENTER )); then
+    # save IFS
+    local saved_IFS=${IFS}
+    # split the candidates into lines
+    IFS=$'\n' out=("${candidates}")
+    # first line is the key pressed to exit fzf
+    key=$(head -1 <<< "$out")
+    # second line is the actual candidates
+    candidates=$(head -2 <<< "$out" | tail -1)
+    # check if the edit key was pressed
+    if [ "$key" = "${ZSH_FZF_HISTORY_SEARCH_FZF_EDIT_KEY}" ]; then
+      # set accept to 0 to avoid accepting the line
+      accept=0
+    fi
+    # restore IFS
+    IFS=${saved_IFS}
   fi
 
   local ret=$?
@@ -82,6 +117,12 @@ fzf_history_search() {
   fi
 
   zle reset-prompt
+
+  # if accept is set to 1 then accept(execute) the line
+  if [ $accept -eq 1 ]; then
+    zle accept-line
+  fi
+
   return $ret
 }
 
