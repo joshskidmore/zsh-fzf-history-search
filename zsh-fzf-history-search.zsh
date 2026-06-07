@@ -36,6 +36,8 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX=''
 fzf_history_search() {
   setopt extendedglob
 
+  local -x FZF_DEFAULT_OPTS="--style full"
+
   FC_ARGS="-l"
   CANDIDATE_LEADING_FIELDS=2
 
