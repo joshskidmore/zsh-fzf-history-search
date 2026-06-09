@@ -7,7 +7,7 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_BIND='^r'
 
 # Args for fzf
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_ARGS} )) &&
-typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ARGS='+s +m -x -e --preview-window=hidden'
+typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_ARGS='+s +m -x -e --preview-window=hidden --bind 'focus:transform-header:''
 
 # Extra args for fzf
 (( ! ${+ZSH_FZF_HISTORY_SEARCH_FZF_EXTRA_ARGS} )) &&
@@ -35,8 +35,6 @@ typeset -g ZSH_FZF_HISTORY_SEARCH_FZF_QUERY_PREFIX=''
 
 fzf_history_search() {
   setopt extendedglob
-
-  local -x FZF_DEFAULT_OPTS="--style full"
 
   FC_ARGS="-l"
   CANDIDATE_LEADING_FIELDS=2
